@@ -52,7 +52,7 @@ A full-stack Attendance Management System built using the MERN stack that allows
 
 ```bash
 # Clone repository
-git clone https://github.com/your-username/WorkPulse.git
+git clone https://github.com/Ankana-Sadhukhan/WorkPulse.git
 
 # Backend setup
 cd server
