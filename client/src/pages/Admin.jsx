@@ -13,12 +13,10 @@ export default function Admin() {
   const [activity, setActivity] = useState(null);
   const [totalHours, setTotalHours] = useState(0);
 
-  // 🔹 Load users
   useEffect(() => {
     getUsers().then((res) => setUsers(res.data));
   }, []);
 
-  // 🔹 Load selected user data
   const loadUserData = async (userId) => {
     setSelectedUser(userId);
 
@@ -34,54 +32,127 @@ export default function Admin() {
   };
 
   return (
-    <div style={{ padding: "30px", fontFamily: "Arial" }}>
-      <h1>👨‍💼 Admin Dashboard</h1>
+    <div style={styles.container}>
+      <h1 style={styles.heading}>👨‍💼 Admin Dashboard</h1>
 
       {/* USERS */}
-      <div style={{ marginBottom: "20px" }}>
-        <h3>Select User</h3>
-        {users.map((u) => (
-          <button
-            key={u.id}
-            onClick={() => loadUserData(u.id)}
-            style={{
-              margin: "5px",
-              padding: "10px",
-              borderRadius: "8px",
-              border: "none",
-              background: "#007bff",
-              color: "white",
-              cursor: "pointer",
-            }}
-          >
-            User {u.id}
-          </button>
-        ))}
+      <div style={styles.card}>
+        <h3 style={styles.subHeading}>Select User</h3>
+        <div style={styles.userGrid}>
+          {users.map((u) => (
+            <button
+              key={u.id}
+              onClick={() => loadUserData(u.id)}
+              style={{
+                ...styles.userBtn,
+                ...(selectedUser === u.id && styles.activeUserBtn),
+              }}
+            >
+              👤 User {u.id}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* USER DATA */}
       {selectedUser && (
-        <div style={{ background: "#f5f5f5", padding: "20px", borderRadius: "10px" }}>
-          <h2>📊 User {selectedUser}</h2>
+        <div style={styles.card}>
+          <h2 style={styles.userTitle}>📊 User {selectedUser}</h2>
 
-          <p>
-            Status:{" "}
-            {activity?.status === "online" ? "🟢 Online" : "🔴 Offline"}
-          </p>
-
-          <p>Total Hours: {totalHours.toFixed(2)} hrs</p>
-
-          <h3>Attendance Logs</h3>
-
-          {attendance.map((a) => (
-            <div key={a.id} style={{ marginBottom: "10px" }}>
-              <b>CheckIn:</b> {a.checkIn} <br />
-              <b>CheckOut:</b> {a.checkOut || "—"} <br />
-              <b>Hours:</b> {a.totalHours || 0}
+          <div style={styles.stats}>
+            <div style={styles.statBox}>
+              <p>Status</p>
+              <h3>
+                {activity?.status === "online" ? "🟢 Online" : "🔴 Offline"}
+              </h3>
             </div>
-          ))}
+
+            <div style={styles.statBox}>
+              <p>Total Hours</p>
+              <h3>{totalHours.toFixed(2)} hrs</h3>
+            </div>
+          </div>
+
+          <h3 style={styles.subHeading}>Attendance Logs</h3>
+
+          <div style={styles.logs}>
+            {attendance.map((a) => (
+              <div key={a.id} style={styles.logCard}>
+                <p><b>🕒 Check-In:</b> {a.checkIn}</p>
+                <p><b>🏁 Check-Out:</b> {a.checkOut || "—"}</p>
+                <p><b>⏳ Hours:</b> {a.totalHours || 0}</p>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
   );
 }
+
+const styles = {
+  container: {
+    padding: "30px",
+    fontFamily: "Segoe UI, sans-serif",
+    background: "#a1cffa",
+    minHeight: "100vh",
+  },
+  heading: {
+    marginBottom: "50px",
+  },
+  card: {
+    background: "#cae4bdca",
+    padding: "20px",
+    borderRadius: "12px",
+    boxShadow: "0 40px 20px rgba(0,0,0,0.1)",
+    marginBottom: "20px",
+  },
+  subHeading: {
+    marginBottom: "10px",
+  },
+  userGrid: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "10px",
+  },
+  userBtn: {
+    padding: "10px 15px",
+    borderRadius: "8px",
+    border: "none",
+    background: "#007bff",
+    color: "#fff",
+    
+    cursor: "pointer",
+    transition: "0.3s",
+  },
+  activeUserBtn: {
+    background: "#05386d",
+  },
+  userTitle: {
+    marginBottom: "15px",
+  },
+  stats: {
+    display: "flex",
+    gap: "20px",
+    marginBottom: "20px",
+  },
+  statBox: {
+    flex: 1,
+    background: "#fafafa",
+    padding: "15px",
+    borderRadius: "10px",
+    textAlign: "center",
+    boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+  },
+  logs: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+    gap: "15px",
+  },
+  logCard: {
+    background: "#852121",
+    padding: "15px",
+    borderRadius: "10px",
+    boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+  },
+};

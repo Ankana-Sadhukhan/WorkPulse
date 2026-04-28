@@ -13,12 +13,10 @@ export default function Register() {
     adminKey: ""
   });
 
-  // ✅ DEFINE FIRST
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // ✅ DEFINE SECOND
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -33,35 +31,112 @@ export default function Register() {
     }
   };
 
-  // ✅ RETURN LAST
   return (
-    <div>
-      <h2>Register</h2>
+    <div style={styles.wrapper}>
+      <div style={styles.card}>
+        <h2 style={styles.heading}>📝 Create Account</h2>
+        <p style={styles.subtext}>Register to get started</p>
 
-      <form onSubmit={handleSubmit}>
-        <input name="name" placeholder="Name" onChange={handleChange} />
-
-        <input name="email" placeholder="Email" onChange={handleChange} />
-
-        <input name="password" type="password" onChange={handleChange} />
-
-        <select name="role" onChange={handleChange}>
-          <option value="user">User</option>
-          <option value="admin">Admin</option>
-        </select>
-
-        {/* ✅ SHOW ONLY FOR ADMIN */}
-        {form.role === "admin" && (
+        <form onSubmit={handleSubmit} style={styles.form}>
           <input
-            name="adminKey"
-            type="password"
-            placeholder="Admin Secret Key"
+            name="name"
+            placeholder="Full Name"
             onChange={handleChange}
+            style={styles.input}
+            required
           />
-        )}
 
-        <button type="submit">Register</button>
-      </form>
+          <input
+            name="email"
+            placeholder="Email"
+            onChange={handleChange}
+            style={styles.input}
+            required
+          />
+
+          <input
+            name="password"
+            type="password"
+            placeholder="Password"
+            onChange={handleChange}
+            style={styles.input}
+            required
+          />
+
+          <select
+            name="role"
+            onChange={handleChange}
+            style={styles.input}
+          >
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
+
+          {form.role === "admin" && (
+            <input
+              name="adminKey"
+              type="password"
+              placeholder="Admin Secret Key"
+              onChange={handleChange}
+              style={styles.input}
+            />
+          )}
+
+          <button type="submit" style={styles.button}>
+            Register
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
+
+const styles = {
+  wrapper: {
+    height: "100vh",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    background: "linear-gradient(135deg, #43cea2, #185a9d)",
+    fontFamily: "Segoe UI, sans-serif"
+  },
+  card: {
+    background: "#fff",
+    padding: "30px",
+    borderRadius: "15px",
+    width: "100%",
+    maxWidth: "400px",
+    boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
+    textAlign: "center"
+  },
+  heading: {
+    marginBottom: "5px"
+  },
+  subtext: {
+    color: "#777",
+    marginBottom: "20px"
+  },
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "15px"
+  },
+  input: {
+    padding: "12px",
+    borderRadius: "8px",
+    border: "1px solid #ddd",
+    outline: "none",
+    fontSize: "14px",
+    transition: "0.3s"
+  },
+  button: {
+    padding: "12px",
+    borderRadius: "8px",
+    border: "none",
+    background: "#43cea2",
+    color: "#fff",
+    fontWeight: "bold",
+    cursor: "pointer",
+    transition: "0.3s"
+  }
+};

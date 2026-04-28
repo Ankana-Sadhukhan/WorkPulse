@@ -1,45 +1,3 @@
-// import { useState } from "react";
-// import API from "../api/axios";
-
-// export default function Login() {
-//   const [form, setForm] = useState({
-//     email: "",
-//     password: ""
-//   });
-
-//   const handleChange = (e) => {
-//     setForm({ ...form, [e.target.name]: e.target.value });
-//   };
-
-//   const handleLogin = async (e) => {
-//     e.preventDefault();
-
-//     try {
-//       if (!form.email || !form.password) {
-//         alert("Please fill in all fields");
-//         return;
-//       }
-//       const res = await API.post("/users/login", form);
-//       console.log(res.data);
-//       alert("Login Success");
-//     } catch (err) {
-//       alert("Login Failed");
-//     }
-//   };
-
-//   return (
-//     <div>
-//       <h2>Login</h2>
-
-//       <form onSubmit={handleLogin}>
-//         <input placeholder="Email" name="email" onChange={handleChange} />
-//         <input placeholder="Password" name="password" type="password" onChange={handleChange} />
-//         <button>Login</button>
-//       </form>
-//     </div>
-//   );
-// }
-
 import { useState } from "react";
 import API from "../api/axios";
 import { useNavigate } from "react-router-dom";
@@ -62,23 +20,15 @@ export default function Login() {
     try {
       const res = await API.post("/users/login", form);
 
-      // 🔥 VERY IMPORTANT LINE
       localStorage.setItem("userId", res.data.id);
 
       alert("✅ Login Successful");
 
-//       if (res.data.role === "admin") {
-//   navigate("/admin");   // 👈 ADMIN PAGE
-// } else {
-//   navigate("/home");      // 👈 USER HOME
-// }
       if (res.data.role === "admin") {
-        navigate("/admin");   // 👈 ADMIN PAGE
+        navigate("/admin");
       } else {
-        navigate("/home");      // 👈 USER HOME
+        navigate("/home");
       }
-
-      // go to Home
 
     } catch (err) {
       alert("❌ Login Failed");
@@ -86,41 +36,84 @@ export default function Login() {
   };
 
   return (
-    <div style={styles.container}>
-      <h2>Login</h2>
+    <div style={styles.wrapper}>
+      <div style={styles.card}>
+        <h2 style={styles.heading}>🔐 Welcome Back</h2>
+        <p style={styles.subtext}>Login to continue</p>
 
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <input
-          name="email"
-          placeholder="Email"
-          onChange={handleChange}
-          required
-        />
+        <form onSubmit={handleSubmit} style={styles.form}>
+          <input
+            name="email"
+            placeholder="Email"
+            onChange={handleChange}
+            required
+            style={styles.input}
+          />
 
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          onChange={handleChange}
-          required
-        />
+          <input
+            name="password"
+            type="password"
+            placeholder="Password"
+            onChange={handleChange}
+            required
+            style={styles.input}
+          />
 
-        <button type="submit">Login</button>
-      </form>
+          <button type="submit" style={styles.button}>
+            Login
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
 
 const styles = {
-  container: {
-    maxWidth: "400px",
-    margin: "auto",
-    marginTop: "50px",
+  wrapper: {
+    height: "100vh",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    background: "linear-gradient(135deg, #667eea, #764ba2)",
+    fontFamily: "Segoe UI, sans-serif"
+  },
+  card: {
+    background: "#fff",
+    padding: "30px",
+    borderRadius: "15px",
+    width: "100%",
+    maxWidth: "380px",
+    boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
     textAlign: "center"
+  },
+  heading: {
+    marginBottom: "5px"
+  },
+  subtext: {
+    color: "#777",
+    marginBottom: "20px"
   },
   form: {
     display: "flex",
     flexDirection: "column",
-    gap: "10px"
+    gap: "15px"
+  },
+  input: {
+    padding: "12px",
+    borderRadius: "8px",
+    border: "1px solid #ddd",
+    outline: "none",
+    fontSize: "14px",
+    transition: "0.3s"
+  },
+  button: {
+    padding: "12px",
+    borderRadius: "8px",
+    border: "none",
+    background: "#667eea",
+    color: "#fff",
+    fontWeight: "bold",
+    cursor: "pointer",
+    transition: "0.3s"
   }
 };
