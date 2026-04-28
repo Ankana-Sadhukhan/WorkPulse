@@ -27,6 +27,10 @@ findToday(userId) {
   update(id, data) {
     return this.Attendance.update(data, { where: { id } });
   }
+
+  delete(id) {
+  return this.Attendance.destroy({ where: { id } });
+}
 }
 
 module.exports = AttendanceRepo;

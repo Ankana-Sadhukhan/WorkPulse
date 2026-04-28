@@ -21,6 +21,9 @@ const UserRepository = require('./repositories/UserRepository');
 const UserService = require('./services/UserService');
 const UserController = require('./controllers/UserControllers');
 
+
+
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -42,6 +45,13 @@ const activityController = new ActivityController(
 // Routes
 const userRoutes = require('./routes/userRoutes')(userController);
 app.use('/api/users', userRoutes);
+
+// const adminRoutes = require('./routes/adminRoutes');
+// app.use('/api/admin', adminRoutes);
+
+const adminRoutes = require("./routes/adminRoutes");
+
+app.use("/admin", adminRoutes);
 
 const router = express.Router();
 

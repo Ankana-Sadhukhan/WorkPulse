@@ -68,6 +68,10 @@ async checkIn(userId) {
   };
 }
 
+async delete(id) {
+  return this.repo.delete(id);
+}
+
 }
 
 module.exports = AttendanceService;

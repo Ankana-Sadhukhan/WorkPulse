@@ -27,7 +27,7 @@ export const checkOut = (userId) =>
   API.post("/attendance/checkout", { userId });
 
 export const updateActivity = (userId, status) =>
-  API.post("/activity", { userId, status });
+  API.post("/activity", { userId, status: status === "online" ? "online" : "offline" });
 
 // ✅ ADD THIS
 export const getActivity = () =>

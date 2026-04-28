@@ -2,17 +2,16 @@ import { useEffect, useState } from "react";
 import { updateActivity, getActivity, checkIn, checkOut } from "../api/axios";
 
 export default function Home() {
+  const userId = localStorage.getItem("userId"); // 🔥 GET USER ID FROM LOCAL STORAGE
   const [data, setData] = useState([]);
-  const [status, setStatus] = useState("Not Working"); // 🔴 default
+  const [status, setStatus] = useState("Not Working");
   const [hours, setHours] = useState(0);
-  const [isWorking, setIsWorking] = useState(false);   // ⭐ control state
+  const [isWorking, setIsWorking] = useState(false);
 
-  // 🔥 FETCH DATA FROM BACKEND
   const fetchData = async () => {
     try {
       const res = await getActivity();
 
-      // keep only latest record per user
       const latestMap = {};
       res.data.forEach(item => {
         latestMap[item.UserId] = item;
@@ -21,8 +20,7 @@ export default function Home() {
       const latestData = Object.values(latestMap);
       setData(latestData);
 
-      // update status from backend
-      if (latestData.length > 0) {
+      if (latestData.length === 0) {
         const currentStatus =
           latestData[0].status === "online"
             ? "Working"
@@ -36,12 +34,11 @@ export default function Home() {
     }
   };
 
-  // ✅ CHECK-IN
   const handleCheckIn = async () => {
     try {
-      await checkIn(1);
+      await checkIn(userId);
 
-      setIsWorking(true);       // 🟢 start tracking
+      setIsWorking(true);
       setStatus("Working");
 
       alert("✅ Checked In");
@@ -51,14 +48,13 @@ export default function Home() {
     }
   };
 
-  // ✅ CHECK-OUT
   const handleCheckOut = async () => {
     try {
-      const res = await checkOut(1);
+      const res = await checkOut(userId);
 
       const workedHours = res.data.totalHours || 0;
 
-      setIsWorking(false);      // 🔴 stop tracking
+      setIsWorking(false);
       setStatus("Not Working");
       setHours(workedHours);
 
@@ -70,13 +66,12 @@ export default function Home() {
     }
   };
 
-  // 🔁 AUTO ACTIVITY UPDATE (ONLY WHEN WORKING)
   useEffect(() => {
     fetchData();
 
     const interval = setInterval(() => {
       if (isWorking) {
-        updateActivity(1, "online");
+        updateActivity(userId, status === "Working" ? "online" : "offline");
         fetchData();
       }
     }, 5000);
@@ -85,45 +80,148 @@ export default function Home() {
   }, [isWorking]);
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>📊 Dashboard</h2>
+    <div style={styles.page}>
+      
+      {/* HEADER */}
+      <div style={styles.header}>
+        <h1 style={styles.title}>📊 CRM Dashboard</h1>
+        <p style={styles.subtitle}>Track your daily activity in real time</p>
+      </div>
 
-      {/* 🔥 STATUS */}
-      {/* <h3>
-        Status:{" "}
-        {status === "Working" ? "🟢 Working" : "🔴 Not Working"}
-      </h3> */}
-
-      <h3>
-        Status:{" "}
-        {status === "Working" ? (
-          <span style={{ color: "green" }}>🟢 Working</span>
-        ) : (
-          <span style={{ color: "red" }}>🔴 Not Working</span>
-        )}
-      </h3>
-      {/* ⏱ TOTAL HOURS */}
-      <h3>
-        Total Working Time: {hours.toFixed(4)} hrs
-      </h3>
-
-      {/* 🔘 BUTTONS */}
-      <button onClick={handleCheckIn} style={{ marginRight: "10px" }}>
-        Check In
-      </button>
-
-      <button onClick={handleCheckOut}>
-        Check Out
-      </button>
-
-      {/* 📄 ACTIVITY */}
-      <h3 style={{ marginTop: "20px" }}>Activity Data:</h3>
-
-      {data.map((item) => (
-        <div key={item.id}>
-          User: {item.UserId} | Status: {item.status}
+      {/* STATUS CARDS */}
+      <div style={styles.cardRow}>
+        
+        <div style={styles.card}>
+          <h3>Status</h3>
+          <p style={{
+            color: status === "Working" ? "green" : "red",
+            fontWeight: "bold",
+            fontSize: "18px"
+          }}>
+            {status === "Working" ? "🟢 Working" : "🔴 Not Working"}
+          </p>
         </div>
-      ))}
+
+        <div style={styles.card}>
+          <h3>Total Hours</h3>
+          <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+            {hours.toFixed(4)} hrs
+          </p>
+        </div>
+
+      </div>
+
+      {/* BUTTONS */}
+      <div style={styles.buttonRow}>
+        <button onClick={handleCheckIn} style={styles.checkInBtn}>
+          Check In
+        </button>
+
+        <button onClick={handleCheckOut} style={styles.checkOutBtn}>
+          Check Out
+        </button>
+      </div>
+
+      {/* ACTIVITY TABLE */}
+      <div style={styles.tableCard}>
+        <h3>📌 Activity Logs</h3>
+
+        {data.map((item) => (
+          <div key={item.id} style={styles.row}>
+            <span>User: {item.UserId}</span>
+            <span
+              style={{
+                color: item.status === "online" ? "green" : "gray",
+                fontWeight: "bold"
+              }}
+            >
+              {item.status}
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
+
+/* 🎨 STYLES */
+const styles = {
+  page: {
+    padding: "30px",
+    fontFamily: "Arial",
+    background: "#bdd2e7",
+    minHeight: "100vh"
+  },
+
+  header: {
+    textAlign: "center",
+    marginBottom: "20px"
+  },
+
+  title: {
+    margin: 0,
+    fontSize: "28px"
+  },
+
+  subtitle: {
+    color: "#666"
+  },
+
+  cardRow: {
+    display: "flex",
+    gap: "20px",
+    justifyContent: "center",
+    marginBottom: "20px"
+  },
+
+  card: {
+    background: "white",
+    padding: "20px",
+    borderRadius: "12px",
+    width: "200px",
+    textAlign: "center",
+    boxShadow: "0 4px 10px rgba(0,0,0,0.1)"
+  },
+
+  buttonRow: {
+    display: "flex",
+    justifyContent: "center",
+    gap: "15px",
+    marginBottom: "20px"
+  },
+
+  checkInBtn: {
+    padding: "10px 20px",
+    background: "#28a745",
+    color: "white",
+    border: "none",
+    borderRadius: "8px",
+    cursor: "pointer"
+  },
+
+  checkOutBtn: {
+    padding: "10px 20px",
+    background: "#dc3545",
+    color: "white",
+    border: "none",
+    borderRadius: "8px",
+    cursor: "pointer"
+  },
+
+  tableCard: {
+    height: "150px",
+    width: "350px",
+    margin: "auto",
+    background: "white",
+    padding: "20px",
+    borderRadius: "12px",
+    boxShadow: "0 4px 10px rgba(110, 11, 11, 0.1)"
+  },
+
+  row: {
+    display: "flex",
+    justifyContent: "space-between",
+    padding: "10px 0",
+    borderBottom: "1px solid #1d550f"
+  }
+};

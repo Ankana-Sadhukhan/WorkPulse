@@ -5,8 +5,8 @@ class ActivityService {
 
   updateStatus(userId, status) {
     return this.repo.upsert({
-      userId,
-      status,
+      userId: userId,
+      status: status === "online" ? "online" : "offline",
       lastActive: new Date(),
     });
   }
