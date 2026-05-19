@@ -1,6 +1,6 @@
 # 🕒 WorkPulse
 
-A full-stack Attendance Management System built using the MERN stack that allows employees to **check in, check out, and track working hours in real-time**. It uses OOP principles for clean, structured, and reusable backend code with secure authentication and live status updates..
+A full-stack Attendance Management System built using the MERN stack that allows employees to **check in, check out, and track working hours in real-time**. It uses OOPS principles for clean, structured, and reusable backend code with secure authentication and live status updates..
 
 ---
 
