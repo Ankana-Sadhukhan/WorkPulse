@@ -64,8 +64,17 @@ git clone https://github.com/Ankana-Sadhukhan/WorkPulse.git
 # Backend setup
 cd server
 node app.js
-
+```
 # Frontend setup
 cd client
 npm install
 npm start
+
+
+## 👩‍💻 Author
+
+**Ankana Sadhukhan**
+GitHub: https://github.com/Ankana-Sadhukhan
+
+---
+
